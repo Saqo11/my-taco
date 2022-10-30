@@ -22,7 +22,7 @@ public class OrderController {
 
     @GetMapping("/current")
     public String orderFrom() {
-        return "orderFrom";
+        return "orderForm";
     }
 
     @PostMapping
