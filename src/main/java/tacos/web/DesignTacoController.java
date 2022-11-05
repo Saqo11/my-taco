@@ -1,9 +1,9 @@
 package tacos.web;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,27 +14,23 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
-import lombok.extern.slf4j.Slf4j;
+
 import tacos.Ingredient;
 import tacos.Ingredient.Type;
-import tacos.Taco;
 import tacos.TacoOrder;
+import tacos.Taco;
 import tacos.data.IngredientRepository;
 
-import javax.validation.Valid;
-
-
-@Slf4j
 @Controller
 @RequestMapping("/design")
 @SessionAttributes("tacoOrder")
-
 public class DesignTacoController {
 
     private final IngredientRepository ingredientRepo;
 
     @Autowired
-    public DesignTacoController(IngredientRepository ingredientRepo) {
+    public DesignTacoController(
+            IngredientRepository ingredientRepo) {
         this.ingredientRepo = ingredientRepo;
     }
 
@@ -64,16 +60,18 @@ public class DesignTacoController {
     }
 
     @PostMapping
-    public String processTaco(@Valid Taco taco, Errors errors, @ModelAttribute TacoOrder tacoOrder) {
+    public String processTaco(
+            @Valid Taco taco, Errors errors,
+            @ModelAttribute TacoOrder tacoOrder) {
+
         if (errors.hasErrors()) {
             return "design";
         }
+
         tacoOrder.addTaco(taco);
-        log.info("Processing taco: {}", taco);
+
         return "redirect:/orders/current";
-
     }
-
 
     private Iterable<Ingredient> filterByType(
             Iterable<Ingredient> ingredients, Type type) {
