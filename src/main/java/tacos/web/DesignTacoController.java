@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import tacos.Ingredient;
-import tacos.Ingredient.Type;
+import tacos.Ingredient.*;
 import tacos.TacoOrder;
 import tacos.Taco;
 import tacos.data.IngredientRepository;
