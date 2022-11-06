@@ -1,52 +1,68 @@
 package tacos;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import lombok.Data;
-import org.hibernate.validator.constraints.CreditCardNumber;
-
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
+import org.hibernate.validator.constraints.CreditCardNumber;
+import lombok.Data;
+
 @Data
-public class TacoOrder {
-	@NotBlank(message="Delivery name is required")
-	private String deliveryName;
+@Entity
+public class TacoOrder implements Serializable {
 
-	@NotBlank(message="Street is required")
-	private String deliveryStreet;
 
-	@NotBlank(message="City is required")
-	private String deliveryCity;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
-	@NotBlank(message="State is required")
-	private String deliveryState;
 
-	@NotBlank(message="Zip code is required")
-	private String deliveryZip;
+    private Date placedAt = new Date();
 
-	@CreditCardNumber(message="Not a valid credit card number")
-	private String ccNumber;
+    private static final long serialVersionUID = 1L;
 
-	@Pattern(regexp="^(0[1-9]|1[0-2])([\\/])([2-9][0-9])$", message="Must be formatted MM/YY")
-	private String ccExpiration;
+    @NotBlank(message = "Delivery name is required")
+    private String deliveryName;
 
-	@Digits(integer=3, fraction=0, message="Invalid CVV")
-	private String ccCVV;	
-	
-	private List<Taco> tacos = new ArrayList<>();
+    @NotBlank(message = "Street is required")
+    private String deliveryStreet;
 
-	private static final long serialVersionUID = 1L;
+    @NotBlank(message = "City is required")
+    private String deliveryCity;
 
-	private Long id;
+    @NotBlank(message = "State is required")
+    private String deliveryState;
 
-	private Date placedAt;
+    @NotBlank(message = "Zip code is required")
+    private String deliveryZip;
 
-	public void addTaco(Taco taco) {
-		this.tacos.add(taco);
-	}
+    @CreditCardNumber(message = "Not a valid credit card number")
+    private String ccNumber;
+
+    @Pattern(regexp = "^(0[1-9]|1[0-2])([\\/])([2-9][0-9])$", message = "Must be formatted MM/YY")
+    private String ccExpiration;
+
+    @Digits(integer = 3, fraction = 0, message = "Invalid CVV")
+    private String ccCVV;
+
+    //that is, all the tacos in this list are from that one order.
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Taco> tacos = new ArrayList<>();
+
+
+    public void addTaco(Taco taco) {
+
+        this.tacos.add(taco);
+    }
 
 }
