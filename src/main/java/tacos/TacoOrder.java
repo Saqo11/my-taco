@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,22 +15,24 @@ import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
+import com.datastax.oss.driver.api.core.uuid.Uuids;
 import org.hibernate.validator.constraints.CreditCardNumber;
 import lombok.Data;
+import org.springframework.data.cassandra.core.mapping.PrimaryKey;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 @Data
-@Entity
+@Table("orders")
 public class TacoOrder implements Serializable {
 
+    private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @PrimaryKey
+    private UUID id = Uuids.timeBased();
 
 
     private Date placedAt = new Date();
-
-    private static final long serialVersionUID = 1L;
 
     @NotBlank(message = "Delivery name is required")
     private String deliveryName;
@@ -56,12 +59,11 @@ public class TacoOrder implements Serializable {
     private String ccCVV;
 
     //that is, all the tacos in this list are from that one order.
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Taco> tacos = new ArrayList<>();
+    @Column("tacos")
+    private List<TacoUDT> tacos = new ArrayList<>();
 
 
-    public void addTaco(Taco taco) {
-
+    public void addTaco(TacoUDT taco) {
         this.tacos.add(taco);
     }
 
